@@ -273,7 +273,7 @@ export function Generator({ text, lang }: { text: Copy; lang: Lang }) {
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       const action = keyAction(event);
-      if (!action || !shortcutAllowed(event.target as HTMLElement | null)) return;
+      if (!action || !shortcutAllowed(event.target as HTMLElement | null, action)) return;
       event.preventDefault();
       if (action === "undo" || action === "redo") dirty.current = true;
       actionRef.current(action);

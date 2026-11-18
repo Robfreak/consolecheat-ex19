@@ -51,6 +51,15 @@ export function isTypingTarget(target: TargetLike): boolean {
   return false;
 }
 
-export function shortcutAllowed(target: TargetLike): boolean {
-  return !isTypingTarget(target);
+/**
+ * Whether a shortcut may act on this target. Text fields, text areas, and selects keep every key.
+ * A focused range slider keeps R, E, [ and ] (and its own arrow keys, which never map to an
+ * action), but still passes Ctrl/⌘+Z, Ctrl/⌘+Y and Ctrl/⌘+Shift+Z through, like in ex16.
+ */
+export function shortcutAllowed(target: TargetLike, action: KeyAction): boolean {
+  if (isTypingTarget(target)) return false;
+  const tag = (target?.tagName ?? "").toUpperCase();
+  const type = (target?.type ?? "").toLowerCase();
+  if (tag === "INPUT" && type === "range") return action === "undo" || action === "redo";
+  return true;
 }
